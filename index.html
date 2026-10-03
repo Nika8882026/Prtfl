@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио Инженера АСУТП</title>
+    <!-- Подключение API Яндекс.Карт -->
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --muted-text: #94a3b8;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            padding: 60px 0 40px 0;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        header h2 {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-weight: 400;
+            margin-bottom: 25px;
+        }
+
+        .contacts {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .contacts a {
+            color: var(--text-color);
+            text-decoration: none;
+            background: var(--card-bg);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .contacts a:hover {
+            border-color: var(--accent-color);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        .btn-pdf {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-color);
+            color: #000 !important;
+            font-weight: 600;
+            padding: 12px 28px !important;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+        }
+
+        .btn-pdf:hover {
+            background: var(--accent-hover) !important;
+        }
+
+        section {
+            padding: 50px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        section h2.section-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        section h2.section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 15%;
+            height: 70%;
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .stack-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stack-card h3 {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .stack-card ul {
+            list-style: none;
+        }
+
+        .stack-card li {
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .project-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .project-info {
+            margin-bottom: 25px;
+        }
+
+        .project-info p {
+            margin-bottom: 10px;
+        }
+
+        .project-info strong {
+            color: var(--accent-color);
+        }
+
+        /* Слайдер / Карусель */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #0b0f19;
+            margin-top: 20px;
+        }
+
+        .slider-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.4s ease-in-out;
+            will-change: transform;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder-box {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+            color: var(--muted-text);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .placeholder-box svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            fill: var(--border-color);
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+            z-index: 10;
+            user-select: none;
+        }
+
+        .slider-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+            border-color: var(--accent-color);
+        }
+
+        .slider-prev { left: 15px; }
+        .slider-next { right: 15px; }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .dot.active {
+            background: var(--accent-color);
+            width: 20px;
+            border-radius: 4px;
+        }
+
+        /* Карта */
+        #map {
+            width: 100%;
+            height: 450px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .doc-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 200px;
+        }
+
+        .doc-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .doc-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-color);
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        /* Модальное окно (Lightbox) */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: 300;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: 30px;
+            color: var(--muted-text);
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--muted-text);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        /* Стили для печати резюме */
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+                padding: 0;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            header {
+                padding: 20px 0;
+            }
+            .contacts a, .btn-pdf, .slider-btn, .slider-dots, #map, .docs-grid, footer {
+                display: none !important;
+            }
+            .project-card, .stack-card {
+                background: #fff;
+                border: 1px solid #ccc;
+                color: #000;
+                page-break-inside: avoid;
+            }
+            .tag {
+                border: 1px solid #000;
+                color: #000;
+                background: none;
+            }
+            .slider-container {
+                height: auto;
+                border: none;
+            }
+            .slider-track {
+                flex-direction: column;
+            }
+            .placeholder-box {
+                background: #fff;
+                border: 1px dashed #ccc;
+                color: #000;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            .project-header { flex-direction: column; }
+            .slider-container { height: 260px; }
+            #map { height: 350px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Шапка сайта -->
+    <header>
+        <h1>Иван Иванов</h1>
+        <h2>Инженер АСУТП / Разработчик систем автоматизации</h2>
+        <div class="contacts">
+            <a href="tel:+79991234567">📞 +7 (999) 123-45-67</a>
+            <a href="mailto:ivanov.asutp@example.com">✉️ ivanov.asutp@example.com</a>
+            <a href="https://t.me/username" target="_blank">✈️ Telegram: @username</a>
+        </div>
+        <a href="resume.pdf" download class="btn-pdf">📄 Скачать резюме в PDF</a>
+    </header>
+
+    <!-- Технологический стек -->
+    <section id="stack">
+        <h2 class="section-title">Профессиональный стек</h2>
+        <div class="stack-grid">
+            <div class="stack-card">
+                <h3>Программируемые логические контроллеры (ПЛК)</h3>
+                <ul>
+                    <li>• TREI (Серия 5B, среда Unimod Pro)</li>
+                    <li>• Siemens (S7-1200/1500/300/400, TIA Portal, Step7)</li>
+                    <li>• ОВЕН ПР (ПР100/103/200, OwenCloud, Owen Logic)</li>
+                </ul>
+            </div>
+            <div class="stack-card">
+                <h3>Диспетчеризация и SCADA / HMI</h3>
+                <ul>
+                    <li>• Wonderware InTouch</li>
+                    <li>• MasterSCADA 3.X / 4D</li>
+                    <li>• EasyBuilder Pro (Панели Weintek)</li>
+                </ul>
+            </div>
+            <div class="stack-card">
+                <h3>Базы данных и IT-интеграция</h3>
+                <ul>
+                    <li>• Microsoft SQL Server (MSSQL)</li>
+                    <li>• Написание хранимых процедур, T-SQL</li>
+                    <li>• Выгрузка исторических трендов и алармов</li>
+                </ul>
+            </div>
+            <div class="stack-card">
+                <h3>Протоколы и Сети</h3>
+                <ul>
+                    <li>• Modbus RTU / TCP</li>
+                    <li>• Profibus, PROFINET</li>
+                    <li>• OPC DA / UA</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Проекты и кейсы -->
+    <section id="projects">
+        <h2 class="section-title">Выполненные проекты</h2>
+
+        <!-- Проект 1: Нефтегаз -->
+        <div class="project-card" data-project-id="1">
+            <div class="project-header">
+                <h3>Автоматизация технологических объектов кустовой площадки</h3>
+                <div class="project-tags">
+                    <span class="tag">Нефтегаз</span>
+                    <span class="tag">TREI</span>
+                    <span class="tag">InTouch</span>
+                    <span class="tag">MSSQL</span>
+                </div>
+            </div>
+            <div class="project-info">
+                <p><strong>Задача:</strong> Модернизация распределенной системы управления (РСУ) и системы противоаварийной автоматической защиты (ПАЗ) куста скважин.</p>
+                <p><strong>Решение:</strong> Проектирование и пусконаладка шкафов на базе отказоустойчивых контроллеров <strong>TREI-5B</strong>. Реализация алгоритмов управления технологическим процессом в среде <strong>Unimod Pro</strong>. Интеграция верхнего уровня в <strong>Wonderware InTouch</strong> с организацией сбора данных и ведения журналов событий в реляционной СУБД <strong>MSSQL</strong>.</p>
+                <p><strong>Результат:</strong> Исключены ложные остановы оборудования, обеспечена 100% глубина архивирования алармов.</p>
+            </div>
+            
+            <!-- Слайдер для Проекта 1 -->
+            <div class="slider-container">
+                <div class="slider-track">
+                    <div class="slide">
+                        <!-- Пример с реальной картинкой (раскомментировать при развертывании):
+                        <img src="img/project1_1.jpg" alt="Шкаф автоматики TREI"> -->
+                        <div class="placeholder-box">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                            <span>Шкаф управления на базе контроллеров TREI-5B (Фото оборудования)</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="placeholder-box">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                            <span>Мнемосхема оператора в Wonderware InTouch (Интерфейс)</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="placeholder-box">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                            <span>Архитектура интеграции с СУБД MSSQL (Схема данных)</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn slider-prev">❮</button>
+                <button class="slider-btn slider-next">❯</button>
+                <div class="slider-dots"></div>
+            </div>
+        </div>
+
+        <!-- Проект 2: Энергетика -->
+        <div class="project-card" data-project-id="2">
+            <div class="project-header">
+                <h3>Диспетчеризация и автоматизация водогрейной котельной</h3>
+                <div class="project-tags">
+                    <span class="tag">Энергетика</span>
+                    <span class="tag">Siemens</span>
+                    <span class="tag">MasterSCADA</span>
+                </div>
+            </div>
+            <div class="project-info">
+                <p><strong>Задача:</strong> Полное переоснащение системы автоматики котлоагрегатов и насосных групп тепловой станции.</p>
+                <p><strong>Решение:</strong> Разработка программного обеспечения для резервируемой пары ПЛК <strong>Siemens SIMATIC S7-1500</strong> в среде <strong>TIA Portal V17</strong>. Проектирование многопользовательской диспетчерской системы управления в <strong>MasterSCADA 4D</strong> по протоколу PROFINET. Реализация каскадного регулирования и контуров защиты по давлению и температуре.</p>
+                <p><strong>Результат:</strong> Повышена энергоэффективность объекта, обеспечена сдача объекта Ростехнадзору без замечаний.</p>
+            </div>
+
+            <!-- Слайдер для Проекта 2 -->
+            <div class="slider-container">
+                <div class="slider-track">
+                    <div class="slide">
+                        <div class="placeholder-box">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                            <span>Монтаж центрального шкафа с ПЛК Siemens S7-1500</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="placeholder-box">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                            <span>Главный экран MasterSCADA котельного зала</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn slider-prev">❮</button>
+                <button class="slider-btn slider-next">❯</button>
+                <div class="slider-dots"></div>
+            </div>
+        </div>
+
+        <!-- Проект 3: Инженерные системы зданий -->
+        <div class="project-card" data-project-id="3">
+            <div class="project-header">
+                <h3>Автоматизация приточно-вытяжной вентиляции бизнес-центра</h3>
+                <div class="project-tags">
+                    <span class="tag">Инженерные системы</span>
+                    <span class="tag">ОВЕН ПР</span>
+                    <span class="tag">EasyBuilder Pro</span>
+                </div>
+            </div>
+            <div class="project-info">
+                <p><strong>Задача:</strong> Создание бюджетной автономной системы локального управления вентиляционными машинами с местными пультами операторов.</p>
+                <p><strong>Решение:</strong> Разработка логики управления в среде <strong>Owen Logic</strong> на базе программируемых реле <strong>ОВЕН ПР200</strong> с поддержкой Modbus RTU. Создание интерфейса локального оператора в <strong>EasyBuilder Pro</strong> для сенсорных панелей Weintek.</p>
+                <p><strong>Результат:</strong> Заказчик получил надежное масштабируемое решение, интегрированное в общую систему BMS здания.</p>
+            </div>
+
+            <!-- Слайдер для Проекта 3 -->
+            <div class="slider-container">
+                <div class="slider-track">
+                    <div class="slide">
+                        <div class="placeholder-box">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                            <span>Щит вентиляции ЩУВ с программируемым реле ПР200</span>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="placeholder-box">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                            <span>Интерфейс настройки уставок на панели Weintek</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn slider-prev">❮</button>
+                <button class="slider-btn slider-next">❯</button>
+                <div class="slider-dots"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- География проектов -->
+    <section id="geography">
+        <h2 class="section-title">География выполненных проектов</h2>
+        <p style="margin-bottom: 20px; color: var(--muted-text);">Интерактивная карта объектов. Готов к сложным пусконаладочным работам и командировкам в любые регионы.</p>
+        <div id="map"></div>
+    </section>
+
+    <!-- Резюме и Документы -->
+    <section id="documents">
+        <h2 class="section-title">Квалификационные документы и резюме</h2>
+        <div class="docs-grid">
+            <div class="doc-card">
+                <div class="doc-icon">📄</div>
+                <h3>Полное резюме (Печатная версия)</h3>
+                <p style="color: var(--muted-text); font-size: 0.85rem; margin-bottom: 15px;">Текстовый формат для HR и СБ компаний</p>
+                <a href="resume.pdf" download class="btn-secondary">Скачать PDF</a>
+            </div>
+            <div class="doc-card">
+                <div class="doc-icon">📜</div>
+                <h3>Профессиональные сертификаты</h3>
+                <p style="color: var(--muted-text); font-size: 0.85rem; margin-bottom: 15px;">Обучение по TREI, Siemens, электробезопасности</p>
+                <a href="certificates.pdf" download class="btn-secondary">Открыть архив</a>
+            </div>
+            <div class="doc-card">
+                <div class="doc-icon">🎓</div>
+                <h3>Диплом и квалификация</h3>
+                <p style="color: var(--muted-text); font-size: 0.85rem; margin-bottom: 15px;">Высшее техническое образование по специальности</p>
+                <a href="diploma.pdf" download class="btn-secondary">Посмотреть скан</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Подвал сайта -->
+<footer>
+    <div class="container">
+        <p>© 2026 Иван Иванов. Портфолио инженера АСУТП.</p>
+    </div>
+</footer>
+
+<!-- Модальное окно просмотра картинок (Lightbox) -->
+<div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lightboxClose">&times;</span>
+    <img class="lightbox-content" id="lightboxImg" src="" alt="Увеличенное изображение">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+    // --- 1. Скрипт Интерактивного Слайдера / Карусели ---
+    document.querySelectorAll('.project-card').forEach(projectCard => {
+        const container = projectCard.querySelector('.slider-container');
+        if (!container) return;
+
+        const track = container.querySelector('.slider-track');
+        const slides = container.querySelectorAll('.slide');
+        const prevBtn = container.querySelector('.slider-prev');
+        const nextBtn = container.querySelector('.slider-next');
+        const dotsContainer = container.querySelector('.slider-dots');
+
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+
+        // Создаем индикаторы (точки)
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => updateSlider(i));
+            dotsContainer.appendChild(dot);
+        }
+        const dots = dotsContainer.querySelectorAll('.dot');
+
+        function updateSlider(index) {
+            if (index < 0) index = totalSlides - 1;
+            if (index >= totalSlides) index = 0;
+            
+            currentIndex = index;
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            dots.forEach(d => d.classList.remove('active'));
+            dots[currentIndex].classList.add('active');
+        }
+
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateSlider(currentIndex + 1);
+        });
+
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateSlider(currentIndex - 1);
+        });
+
+        // Поддержка свайпов на мобильных устройствах
+        let startX = 0;
+        let endX = 0;
+
+        container.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+
+        container.addEventListener('touchmove', (e) => {
+            endX = e.touches[0].clientX;
+        }, { passive: true });
+
+        container.addEventListener('touchend', () => {
+            let threshold = 50; // Минимальная дистанция свайпа в пикселях
+            if (startX - endX > threshold) {
+                updateSlider(currentIndex + 1); // Свайп влево -> следующий
+            } else if (endX - startX > threshold) {
+                updateSlider(currentIndex - 1); // Свайп вправо -> предыдущий
+            }
+        });
+
+        // Клик по слайду для увеличения (кроме плейсхолдеров)
+        slides.forEach(slide => {
+            slide.addEventListener('click', () => {
+                const img = slide.querySelector('img');
+                const captionText = slide.querySelector('.placeholder-box span')?.innerText || img?.alt || '';
+                
+                if (img && img.src) {
+                    openLightbox(img.src, captionText);
+                } else {
+                    // Если картинки нет, показываем плейсхолдер в лайтбоксе (для теста)
+                    openLightbox('', captionText + ' [Режим демонстрации шаблона]');
+                }
+            });
+        });
+    });
+
+    // --- 2. Скрипт Fullscreen просмотра (Lightbox) ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    function openLightbox(src, caption) {
+        if(src) {
+            lightboxImg.src = src;
+            lightboxImg.style.display = 'block';
+        } else {
+            lightboxImg.style.display = 'none'; // Скрываем тег img, если тестируем пустой шаблон
+        }
+        lightboxCaption.innerText = caption;
+        lightbox.classList.add('show');
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('show');
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+    });
+
+
+    // --- 3. Интеграция Интерактивной Карты Яндекс.Карт ---
+    ymaps.ready(initMap);
+
+    function initMap() {
+        // Создание карты с центром в географическом центре РФ для демонстрации охвата
+        var myMap = new ymaps.Map("map", {
+            center: [61.0000, 75.0000], // Сургут / Нижневартовск
+            zoom: 4,
+            controls: ['zoomControl', 'fullscreenControl']
+        });
+
+        // Применяем кастомную темную тему к карте через опции слоев
+        myMap.options.set('backgroundColor', '#0f172a');
+
+        // Метка 1: Нефтегазовый объект
+        var placemark1 = new ymaps.Placemark([60.9408, 76.5585], {
+            balloonContentHeader: '<strong>Нижневартовский р-н (Нефтегаз)</strong>',
+            balloonContentBody: '<strong>Объект:</strong> Кустовая площадка скважин.<br><strong>Стек:</strong> ПЛК TREI-5B, ПО InTouch, СУБД MSSQL.<br><strong>Роль:</strong> Разработка РСУ/ПАЗ, пусконаладка на объекте.'
+        }, {
+            preset: 'islands#darkBlueIndustrialIcon'
+        });
+
+        // Метка 2: Энергетика
+        var placemark2 = new ymaps.Placemark([61.2500, 73.4167], {
+            balloonContentHeader: '<strong>Сургутская ТЭЦ (Энергетика)</strong>',
+            balloonContentBody: '<strong>Объект:</strong> Модернизация контуров водогрейной котельной.<br><strong>Стек:</strong> Siemens S7-1500, TIA Portal, MasterSCADA 4D.<br><strong>Роль:</strong> Программирование каскадного регулирования.'
+        }, {
+            preset: 'islands#darkBlueIndustrialIcon'
+        });
+
+        // Метка 3: Инженерные системы (BMS)
+        var placemark3 = new ymaps.Placemark([55.7558, 37.6173], {
+            balloonContentHeader: '<strong>Москва (Инженерные системы зданий)</strong>',
+            balloonContentBody: '<strong>Объект:</strong> Диспетчеризация БЦ «Классик».<br><strong>Стек:</strong> ОВЕН ПР200, Панели Weintek (EasyBuilder Pro).<br><strong>Роль:</strong> Проектирование автоматики вентиляционных систем.'
+        }, {
+            preset: 'islands#darkBlueIndustrialIcon'
+        });
+
+        // Добавление меток на карту
+        myMap.geoObjects.add(placemark1);
+        myMap.geoObjects.add(placemark2);
+        myMap.geoObjects.add(placemark3);
+
+        // Отключаем скролл карты колесиком мыши, чтобы не мешать прокрутке страницы
+        myMap.behaviors.disable('scrollZoom');
+    }
+</script>
+</body>
+</html>
